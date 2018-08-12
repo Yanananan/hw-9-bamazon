@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var utility = require("./utility.js");
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -15,25 +16,6 @@ connection.connect(function(err) {
     runApp();
 });
 
-function tableSpace(value,alignment,width){
-    var spaceLength = width - value.toString().length;
-    if (alignment == "L"){
-        for (var i = 0; i<spaceLength; i++){
-            value = value + " ";
-        }
-    } else {
-        for (var i = 0; i<spaceLength; i++){
-            value = " " + value;
-        }
-    }
-    return value;
-}
-
-function validateQuantity(quantity){
-    var regex = /^\d+$/;
-    return (regex.test(quantity)) || "Quantity should be a number!";
- }
-
 function runApp(){
     console.log("Displaying available items...\n");
     var query = connection.query(
@@ -46,11 +28,11 @@ function runApp(){
                 console.log("| item_id | product_name       | department_name |   price | stock_quantity |");
                 console.log("+---------+--------------------+-----------------+---------+----------------+");
                 for (var i in mysqlRes){
-                    console.log("| "+tableSpace(mysqlRes[i].item_id,"R",7)+
-                    " | "+tableSpace(mysqlRes[i].product_name,"L",18)+
-                    " | "+tableSpace(mysqlRes[i].department_name,"L",15)+
-                    " | "+tableSpace(mysqlRes[i].price,"R",7)+
-                    " | "+tableSpace(mysqlRes[i].stock_quantity,"R",14)+" |");
+                    console.log("| "+utility.tableSpace(mysqlRes[i].item_id,"R",7)+
+                    " | "+utility.tableSpace(mysqlRes[i].product_name,"L",18)+
+                    " | "+utility.tableSpace(mysqlRes[i].department_name,"L",15)+
+                    " | "+utility.tableSpace(mysqlRes[i].price,"R",7)+
+                    " | "+utility.tableSpace(mysqlRes[i].stock_quantity,"R",14)+" |");
                 }
                 console.log("+---------+--------------------+-----------------+---------+----------------+");
             }
@@ -64,7 +46,7 @@ function runApp(){
                     type: "input",
                     message: "Enter the quantity desired: ",
                     name: "quantity",
-                    validate: validateQuantity
+                    validate: utility.validateQuantity
                 },
             ])
             .then(function(inquirerResponse) {
