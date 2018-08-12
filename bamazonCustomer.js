@@ -23,7 +23,7 @@ function runApp(){
         function(err, mysqlRes) {
             if (err){
                 console.log(err);
-            } else {//9,20,17,9,16
+            } else {
                 console.log("+---------+--------------------+-----------------+---------+----------------+");
                 console.log("| item_id | product_name       | department_name |   price | stock_quantity |");
                 console.log("+---------+--------------------+-----------------+---------+----------------+");
@@ -78,7 +78,7 @@ function runApp(){
                                         connection.end();
                                     }
                                 );
-                                console.log("update quantity: "+query.sql);
+                                console.log("update quantity: "+query.sql+ "\n");
                             } else {
                                 console.log("Not enough in stock.  Cancelling purchase.");
                                 console.log("end connection");
@@ -87,9 +87,9 @@ function runApp(){
                         }
                     }
                 );
-                console.log("retrieving selected item: "+query.sql);
+                console.log("retrieving selected item: "+query.sql+ "\n");
             });
         }
     );
-    console.log("display all items: "+query.sql);
+    console.log("display all items: "+query.sql+ "\n");
 }
