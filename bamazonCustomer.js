@@ -19,28 +19,20 @@ connection.connect(function(err) {
 function runApp(){
     console.log("Displaying available items...\n");
     var query = connection.query(
-        "SELECT * FROM products",
+        "SELECT item_id, product_name, department_name, price, stock_quantity FROM products LEFT JOIN departments ON departments.department_id = products.dep_id",
         function(err, mysqlRes) {
             if (err){
                 console.log(err);
             } else {
-                console.log("+---------+--------------------+-----------------+---------+----------------+");
-                console.log("| item_id | product_name       | department_name |   price | stock_quantity |");
-                console.log("+---------+--------------------+-----------------+---------+----------------+");
-                for (var i in mysqlRes){
-                    console.log("| "+utility.tableSpace(mysqlRes[i].item_id,"R",7)+
-                    " | "+utility.tableSpace(mysqlRes[i].product_name,"L",18)+
-                    " | "+utility.tableSpace(mysqlRes[i].department_name,"L",15)+
-                    " | "+utility.tableSpace(mysqlRes[i].price,"R",7)+
-                    " | "+utility.tableSpace(mysqlRes[i].stock_quantity,"R",14)+" |");
-                }
-                console.log("+---------+--------------------+-----------------+---------+----------------+");
+                var columns = ["item_id", "product_name", "department_name", "price", "stock_quantity"];
+                utility.logTable(columns,mysqlRes);
             }
             inquirer.prompt([
                 {
                     type: "input",
                     message: "Enter item_id of the item you want: ",
-                    name: "item_id"
+                    name: "item_id",
+                    validate: utility.validateQuantity
                 },
                 {
                     type: "input",
@@ -60,10 +52,12 @@ function runApp(){
                             console.log(err);
                         } else {
                             if (inquirerResponse.quantity<=mysqlRes[0].stock_quantity){
+                                var totalPurchase = parseFloat((mysqlRes[0].price*inquirerResponse.quantity).toFixed(2));
                                 var query = connection.query(
                                     "UPDATE products SET ? WHERE ?",
                                     [{
-                                        stock_quantity: mysqlRes[0].stock_quantity-inquirerResponse.quantity
+                                        stock_quantity: mysqlRes[0].stock_quantity-inquirerResponse.quantity,
+                                        product_sales: mysqlRes[0].product_sales+totalPurchase
                                     },
                                     {
                                         item_id: inquirerResponse.item_id
@@ -72,7 +66,7 @@ function runApp(){
                                         if (err){
                                             console.log(err);
                                         } else {
-                                            console.log("Your total cost of purchase is $"+mysqlRes[0].price*inquirerResponse.quantity);
+                                            console.log("Your total cost of purchase is $"+totalPurchase);
                                         }
                                         console.log("end connection");
                                         connection.end();

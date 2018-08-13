@@ -1,44 +1,44 @@
--- 1. Create a MySQL Database called `bamazon`.
-
--- 2. Then create a Table inside of that database called `products`.
-
--- 3. The products table should have each of the following columns:
-
---    * item_id (unique id for each product)
-
---    * product_name (Name of product)
-
---    * department_name
-
---    * price (cost to customer)
-
---    * stock_quantity (how much of the product is available in stores)
-
--- 4. Populate this database with around 10 different products. (i.e. Insert "mock" data rows into this database and table).
-
 DROP DATABASE IF EXISTS bamazon;
 CREATE DATABASE bamazon;
 USE bamazon;
 
+CREATE TABLE departments (
+  department_id INT NOT NULL AUTO_INCREMENT,
+  department_name VARCHAR(255) NOT NULL,
+  over_head_costs DECIMAL(10,2) NOT NULL,
+  PRIMARY KEY (department_id)
+);
+
+INSERT INTO departments 
+(department_name,        over_head_costs)
+VALUES  
+("Sports",               100.00),
+("Apparels",             200.00),
+("Home & Decor",         500.00),
+("Books",                100.00),
+("Appliances",           1000.00);
+
 CREATE TABLE products (
   item_id INT NOT NULL AUTO_INCREMENT,
   product_name VARCHAR(255) NOT NULL,
-  department_name VARCHAR(255),
-  price DECIMAL(10,2),
-  stock_quantity INT(15),
-  PRIMARY KEY (item_id)
+  dep_id INT NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  stock_quantity INT NOT NULL,
+  product_sales DECIMAL(10,2) NOT NULL,
+  PRIMARY KEY (item_id),
+  FOREIGN KEY (dep_id) REFERENCES departments(department_id)
 );
 
 INSERT INTO products 
-(product_name,          department_name,    price,      stock_quantity)
+(product_name,          dep_id,      price,      stock_quantity, product_sales)
 VALUES  
-("Nail Bat",            "Sports",           19.99,      75),
-("Claimh Solais",       "Apparels",         1978.00,    1),
-("Lazy Shell",          "Home & Decor",     189.99,     5),
-("Corridor of Time",    "Home & Decor",     5900.00,    3),
-("Wyndia",              "Apparels",         300.00,     10),
-("The Velvet Room",     "Books",            50.99,      50),
-("Stray Beads",         "Apparels",         3.99,       4000),
-("Waddle Dee",          "Appliances",       35.00,      200),
-("Master Ball",         "Sports",           25.00,      1290),
-("Tyreal's Might",      "Books",            19.00,      99);
+("Nail Bat",            1,           19.99,      75,             0),
+("Claimh Solais",       2,           1978.00,    1,              0),
+("Lazy Shell",          3,           189.99,     5,              0),
+("Corridor of Time",    3,           5900.00,    3,              0),
+("Wyndia",              2,           300.00,     10,             0),
+("The Velvet Room",     4,           50.99,      50,             0),
+("Stray Beads",         2,           3.99,       4000,           0),
+("Waddle Dee",          5,           35.00,      200,            0),
+("Master Ball",         1,           25.00,      1290,           0),
+("Tyreal's Might",      4,           19.00,      99,             0);
